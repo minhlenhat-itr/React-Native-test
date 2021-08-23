@@ -14,9 +14,12 @@
     "@react-navigation/native-stack": "^6.1.0",
     "babel-plugin-inline-svg": "^1.2.0",
     "fbemitter": "^3.0.0",
+    "lodash": "^4.17.21",
     "react": "17.0.2",
     "react-native": "0.65.1",
+    "react-native-modal": "^12.1.0",
     "react-native-pager-view": "^5.4.0",
+    "react-native-popup-menu": "^0.15.11",
     "react-native-svg": "^12.1.1",
     "react-native-tab-view": "^3.1.1"
   },
