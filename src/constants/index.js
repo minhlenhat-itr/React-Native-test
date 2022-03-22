@@ -5,3 +5,9 @@ export const initTheme = {
 export const EmitterKey = {
   CHANGE_APP_THEME: 'CHANGE_APP_THEME',
 };
+
+export const EnumRouteName = {
+  InitView: 'InitView',
+  ComponentView: 'ComponentView',
+  HookView: 'HookView',
+};
