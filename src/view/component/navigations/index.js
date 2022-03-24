@@ -7,14 +7,19 @@ import InitView from '../../page/initView';
 import HookView from '../../page/hookView';
 import ComponentView from '../../page/componentView';
 
-const Stack = createStackNavigator();
+const Stack = createNativeStackNavigator();
 const Navigations = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName={EnumRouteName.InitView}>
-        <Stack.Screen name={EnumRouteName.InitView} component={InitView} />
+        <Stack.Screen
+          options={{}}
+          name={EnumRouteName.InitView}
+          component={InitView}
+        />
         <Stack.Screen name={EnumRouteName.HookView} component={HookView} />
         <Stack.Screen
+          options={{title: 'Registration User'}}
           name={EnumRouteName.ComponentView}
           component={ComponentView}
         />
