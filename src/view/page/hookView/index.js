@@ -4,8 +4,8 @@ import themedStyle from './styles';
 import {useTheme} from 'react-native-themed-styles';
 import {useForm, Controller, useController} from 'react-hook-form';
 import {checkNull} from '../../../utils/validation';
-import _ from 'lodash';
-
+import _, {last} from 'lodash';
+import * as yup from 'yup';
 // type FormValues = {
 //   firstName: String,
 //   lastName: String,
@@ -18,6 +18,7 @@ const HookView = () => {
   const [styles, color] = useTheme(themedStyle);
   const {
     control,
+    setValue,
     handleSubmit,
     setError,
     formState: {errors},
@@ -30,6 +31,17 @@ const HookView = () => {
       service: '',
     },
   });
+
+  const schema = yup
+    .object({
+      firstName: yup.string().required(),
+      lastName: yup.string().required(),
+      email: yup
+        .string()
+        .email('Please enter a valid email')
+        .required('Email address is required'),
+    })
+    .required();
 
   const onSubmit = (data, event) => {
     // throw new Error('test');

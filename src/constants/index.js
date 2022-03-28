@@ -9,5 +9,6 @@ export const EmitterKey = {
 export const EnumRouteName = {
   InitView: 'InitView',
   ComponentView: 'ComponentView',
-  HookView: 'HookView',
+  // HookView: 'HookView',
+  SignUp: 'SignUp',
 };

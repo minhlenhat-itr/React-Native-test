@@ -14,8 +14,7 @@ const themedStyle = styleSheetFactory(theme => ({
   btnContainer: {
     width: '100%',
     marginTop: 10,
-    // position: 'absolute',
-    // bottom: 0,
+    height: 55,
     marginBottom: 10,
     backgroundColor: '#098ae0',
     justifyContent: 'center',

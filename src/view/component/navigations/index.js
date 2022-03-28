@@ -6,6 +6,7 @@ import {EnumRouteName} from '../../../constants';
 import InitView from '../../page/initView';
 import HookView from '../../page/hookView';
 import ComponentView from '../../page/componentView';
+import SignUp from '../../page/signUp';
 
 const Stack = createNativeStackNavigator();
 const Navigations = () => {
@@ -17,9 +18,18 @@ const Navigations = () => {
           name={EnumRouteName.InitView}
           component={InitView}
         />
-        <Stack.Screen name={EnumRouteName.HookView} component={HookView} />
+        {/* <Stack.Screen
+          options={{title: 'MultiForm'}}
+          name={EnumRouteName.HookView}
+          component={HookView}
+        /> */}
         <Stack.Screen
-          options={{title: 'Registration User'}}
+          options={{title: 'MultiForm'}}
+          name={EnumRouteName.SignUp}
+          component={SignUp}
+        />
+        <Stack.Screen
+          options={{title: 'Single Form'}}
           name={EnumRouteName.ComponentView}
           component={ComponentView}
         />

@@ -6,6 +6,7 @@ import {useForm, Controller, useController} from 'react-hook-form';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {checkNull} from '../../../utils/validation';
 import {yupResolver} from '@hookform/resolvers/yup';
+import InputCT from '../../component/inputCT';
 import _, {last} from 'lodash';
 import * as yup from 'yup';
 
@@ -56,21 +57,21 @@ const ComponentView = () => {
 
   const onSubmit = (data, event) => {
     console.log(data);
-    console.log(_.isEqual(data.password, data.confirmPassword));
-    if (!_.isEqual(data.password, data.confirmPassword)) {
+    if (!_.isEqual(data.firstName, data.lastName)) {
       setError(
         'password',
         {
           type: 'manual',
-          message: 'Password and Confirm Password should be the same!',
+          message: 'Password and confirm password are not the same!',
         },
-        {shouldFocus: true},
+        {
+          shouldFocusError: true,
+          shouldFocus: true,
+        },
       );
-      setError('confirmPassword', {
-        type: 'manual',
-        message: 'Password and Confirm Password should be the same!',
-      });
     }
+
+    //logic
   };
 
   const onError = (error, event) => {
@@ -101,29 +102,22 @@ const ComponentView = () => {
               field: {onChange, onBlur, value, ref},
               fieldState: {invalid, isTouched, isDirty, error},
             }) => (
-              <View>
-                <Text style={styles.txtTitle}>First name</Text>
-                <TouchableOpacity style={styles.inputContainer}>
-                  <TextInput
-                    placeholder="First name"
-                    style={styles.input}
-                    onBlur={onBlur}
-                    blurOnSubmit={false}
-                    onChangeText={onChange}
-                    onSubmitEditing={() => {
-                      setFocus('lastName');
-                    }}
-                    value={value}
-                    ref={ref}
-                  />
-                </TouchableOpacity>
-              </View>
+              <InputCT
+                title={'First Name'}
+                onBlur={onBlur}
+                blurOnSubmit={false}
+                onChange={onChange}
+                onSubmitEditing={() => {
+                  setFocus('lastName');
+                }}
+                value={value}
+                ref={ref}
+                error={errors.firstName}
+              />
             )}
             name="firstName"
           />
-          {errors.firstName && (
-            <Text style={{color: 'red'}}>{errors.firstName.message}</Text>
-          )}
+
           <Controller
             control={control}
             // rules={{
@@ -133,29 +127,22 @@ const ComponentView = () => {
             //   },
             // }}
             render={({field: {onChange, onBlur, value, ref}}) => (
-              <View>
-                <Text style={styles.txtTitle}>Last name</Text>
-                <TouchableOpacity style={styles.inputContainer}>
-                  <TextInput
-                    placeholder="Last name"
-                    style={styles.input}
-                    onBlur={onBlur}
-                    blurOnSubmit={false}
-                    onChangeText={onChange}
-                    onSubmitEditing={() => {
-                      setFocus('email');
-                    }}
-                    value={value}
-                    ref={ref}
-                  />
-                </TouchableOpacity>
-              </View>
+              <InputCT
+                title={'Last Name'}
+                onBlur={onBlur}
+                blurOnSubmit={false}
+                onChange={onChange}
+                onSubmitEditing={() => {
+                  setFocus('email');
+                }}
+                value={value}
+                ref={ref}
+                error={errors.lastName}
+              />
             )}
             name="lastName"
           />
-          {errors.lastName && (
-            <Text style={{color: 'red'}}>{errors.lastName.message}</Text>
-          )}
+
           <Controller
             control={control}
             // rules={{
@@ -169,29 +156,21 @@ const ComponentView = () => {
             //   },
             // }}
             render={({field: {onChange, onBlur, value, ref}}) => (
-              <View>
-                <Text style={styles.txtTitle}>Email</Text>
-                <TouchableOpacity style={styles.inputContainer}>
-                  <TextInput
-                    placeholder="Email"
-                    style={styles.input}
-                    onBlur={onBlur}
-                    blurOnSubmit={false}
-                    onChangeText={onChange}
-                    onSubmitEditing={() => {
-                      setFocus('phoneNumber');
-                    }}
-                    value={value}
-                    ref={ref}
-                  />
-                </TouchableOpacity>
-              </View>
+              <InputCT
+                title={'email'}
+                onBlur={onBlur}
+                blurOnSubmit={false}
+                onChange={onChange}
+                onSubmitEditing={() => {
+                  setFocus('phoneNumber');
+                }}
+                value={value}
+                ref={ref}
+                error={errors.email}
+              />
             )}
             name="email"
           />
-          {errors.email && (
-            <Text style={{color: 'red'}}>{errors.email.message}</Text>
-          )}
           <Controller
             control={control}
             // rules={{
@@ -201,30 +180,22 @@ const ComponentView = () => {
             //   },
             // }}
             render={({field: {onChange, onBlur, value, ref}}) => (
-              <View>
-                <Text style={styles.txtTitle}>Phone number</Text>
-                <TouchableOpacity style={styles.inputContainer}>
-                  <TextInput
-                    placeholder="Phone number"
-                    style={styles.input}
-                    onBlur={onBlur}
-                    blurOnSubmit={false}
-                    keyboardType={'number-pad'}
-                    onChangeText={onChange}
-                    onSubmitEditing={() => {
-                      setFocus('password');
-                    }}
-                    value={value}
-                    ref={ref}
-                  />
-                </TouchableOpacity>
-              </View>
+              <InputCT
+                title={'Phone number'}
+                onBlur={onBlur}
+                blurOnSubmit={false}
+                onChange={onChange}
+                onSubmitEditing={() => {
+                  setFocus('password');
+                }}
+                value={value}
+                ref={ref}
+                error={errors.phoneNumber}
+              />
             )}
             name="phoneNumber"
           />
-          {errors.phoneNumber && (
-            <Text style={{color: 'red'}}>{errors.phoneNumber.message}</Text>
-          )}
+
           <Controller
             control={control}
             // rules={{
@@ -238,29 +209,21 @@ const ComponentView = () => {
             //   },
             // }}
             render={({field: {onChange, onBlur, value, ref}}) => (
-              <View>
-                <Text style={styles.txtTitle}>Password</Text>
-                <TouchableOpacity style={styles.inputContainer}>
-                  <TextInput
-                    placeholder="Password"
-                    style={styles.input}
-                    onBlur={onBlur}
-                    blurOnSubmit={false}
-                    onChangeText={onChange}
-                    onSubmitEditing={() => {
-                      setFocus('confirmPassword');
-                    }}
-                    value={value}
-                    ref={ref}
-                  />
-                </TouchableOpacity>
-              </View>
+              <InputCT
+                title={'Password'}
+                onBlur={onBlur}
+                blurOnSubmit={false}
+                onChange={onChange}
+                onSubmitEditing={() => {
+                  setFocus('confirmPassword');
+                }}
+                value={value}
+                ref={ref}
+                error={errors.password}
+              />
             )}
             name="password"
           />
-          {errors.password && (
-            <Text style={{color: 'red'}}>{errors.password.message}</Text>
-          )}
           <Controller
             control={control}
             // rules={{
@@ -278,25 +241,17 @@ const ComponentView = () => {
             //   },
             // }}
             render={({field: {onChange, onBlur, value, ref}}) => (
-              <View>
-                <Text style={styles.txtTitle}>Confirm password</Text>
-                <TouchableOpacity style={styles.inputContainer}>
-                  <TextInput
-                    placeholder="Confirm Password"
-                    style={styles.input}
-                    onBlur={onBlur}
-                    onChangeText={onChange}
-                    value={value}
-                    ref={ref}
-                  />
-                </TouchableOpacity>
-              </View>
+              <InputCT
+                title={'Confirm Password'}
+                onBlur={onBlur}
+                onChange={onChange}
+                value={value}
+                ref={ref}
+                error={errors.confirmPassword}
+              />
             )}
             name="confirmPassword"
           />
-          {errors.confirmPassword && (
-            <Text style={{color: 'red'}}>{errors.confirmPassword.message}</Text>
-          )}
 
           <TouchableOpacity
             style={[
