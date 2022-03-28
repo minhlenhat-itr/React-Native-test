@@ -5,6 +5,7 @@ import {useTheme} from 'react-native-themed-styles';
 import {useForm, Controller, useController} from 'react-hook-form';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {checkNull} from '../../../utils/validation';
+import {yupResolver} from '@hookform/resolvers/yup';
 import _, {last} from 'lodash';
 import * as yup from 'yup';
 
@@ -13,6 +14,20 @@ const ComponentView = () => {
 
   const emailPattern =
     /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+  const schema = yup
+    .object({
+      firstName: yup.string().required(),
+      lastName: yup.string().required(),
+      email: yup
+        .string()
+        .email('Please enter a valid email')
+        .required('Email address is required'),
+      phoneNumber: yup.string().required(),
+      password: yup.string().required(),
+      confirmPassword: yup.string().required(),
+    })
+    .required();
 
   const {
     control,
@@ -23,6 +38,7 @@ const ComponentView = () => {
     formState: {errors, isValidating, isValid},
   } = useForm({
     mode: 'onBlur',
+    resolver: yupResolver(schema),
     defaultValues: {
       firstName: '',
       lastName: '',
@@ -30,36 +46,34 @@ const ComponentView = () => {
       phoneNumber: '',
       password: '',
       confirmPassword: '',
-      a: '',
-      b: '',
-      c: '',
-      d: '',
     },
     shouldFocusError: true,
   });
-
-  // const schema = yup
-  //   .object({
-  //     firstName: yup.string().required(),
-  //     lastName: yup.string().required(),
-  //     email: yup
-  //       .string()
-  //       .email('Please enter a valid email')
-  //       .required('Email address is required'),
-  //   })
-  //   .required();
 
   // useEffect(() => {
   //   setFocus('firstName');
   // }, [setFocus]);
 
   const onSubmit = (data, event) => {
-    console.log('error: ', isValid, isValidating);
     console.log(data);
+    console.log(_.isEqual(data.password, data.confirmPassword));
+    if (!_.isEqual(data.password, data.confirmPassword)) {
+      setError(
+        'password',
+        {
+          type: 'manual',
+          message: 'Password and Confirm Password should be the same!',
+        },
+        {shouldFocus: true},
+      );
+      setError('confirmPassword', {
+        type: 'manual',
+        message: 'Password and Confirm Password should be the same!',
+      });
+    }
   };
 
   const onError = (error, event) => {
-    console.log('error: ', isValid, isValidating);
     //only catch rules error, but not catch undefined props or Error handle in onSubmit (call API, run async task, ...)
     console.log('error submit: ', error);
   };
@@ -77,12 +91,12 @@ const ComponentView = () => {
         <View>
           <Controller
             control={control}
-            rules={{
-              required: {
-                value: true,
-                message: 'String cannot be empty!',
-              },
-            }}
+            // rules={{
+            //   required: {
+            //     value: true,
+            //     message: 'String cannot be empty!',
+            //   },
+            // }}
             render={({
               field: {onChange, onBlur, value, ref},
               fieldState: {invalid, isTouched, isDirty, error},
@@ -112,12 +126,12 @@ const ComponentView = () => {
           )}
           <Controller
             control={control}
-            rules={{
-              required: {
-                value: true,
-                message: 'String cannot be empty!',
-              },
-            }}
+            // rules={{
+            //   required: {
+            //     value: true,
+            //     message: 'String cannot be empty!',
+            //   },
+            // }}
             render={({field: {onChange, onBlur, value, ref}}) => (
               <View>
                 <Text style={styles.txtTitle}>Last name</Text>
@@ -144,16 +158,16 @@ const ComponentView = () => {
           )}
           <Controller
             control={control}
-            rules={{
-              required: {
-                value: true,
-                message: 'String cannot be empty!',
-              },
-              pattern: {
-                value: emailPattern,
-                message: 'Wrong email format!',
-              },
-            }}
+            // rules={{
+            //   required: {
+            //     value: true,
+            //     message: 'String cannot be empty!',
+            //   },
+            //   pattern: {
+            //     value: emailPattern,
+            //     message: 'Wrong email format!',
+            //   },
+            // }}
             render={({field: {onChange, onBlur, value, ref}}) => (
               <View>
                 <Text style={styles.txtTitle}>Email</Text>
@@ -180,12 +194,12 @@ const ComponentView = () => {
           )}
           <Controller
             control={control}
-            rules={{
-              required: {
-                value: true,
-                message: 'String cannot be empty!',
-              },
-            }}
+            // rules={{
+            //   required: {
+            //     value: true,
+            //     message: 'String cannot be empty!',
+            //   },
+            // }}
             render={({field: {onChange, onBlur, value, ref}}) => (
               <View>
                 <Text style={styles.txtTitle}>Phone number</Text>
@@ -195,6 +209,7 @@ const ComponentView = () => {
                     style={styles.input}
                     onBlur={onBlur}
                     blurOnSubmit={false}
+                    keyboardType={'number-pad'}
                     onChangeText={onChange}
                     onSubmitEditing={() => {
                       setFocus('password');
@@ -212,16 +227,16 @@ const ComponentView = () => {
           )}
           <Controller
             control={control}
-            rules={{
-              required: {
-                value: true,
-                message: 'String cannot be empty!',
-              },
-              minLength: {
-                value: 5,
-                message: 'String cannot less than 5 chars',
-              },
-            }}
+            // rules={{
+            //   required: {
+            //     value: true,
+            //     message: 'String cannot be empty!',
+            //   },
+            //   minLength: {
+            //     value: 5,
+            //     message: 'String cannot less than 5 chars',
+            //   },
+            // }}
             render={({field: {onChange, onBlur, value, ref}}) => (
               <View>
                 <Text style={styles.txtTitle}>Password</Text>
@@ -248,20 +263,20 @@ const ComponentView = () => {
           )}
           <Controller
             control={control}
-            rules={{
-              required: {
-                value: true,
-                message: 'String cannot be empty!',
-              },
-              minLength: {
-                value: 5,
-                message: 'String cannot less than 5 chars',
-              },
-              validate: {
-                equalToPassword: value =>
-                  value.length < 10 || 'Password are not the same!',
-              },
-            }}
+            // rules={{
+            //   required: {
+            //     value: true,
+            //     message: 'String cannot be empty!',
+            //   },
+            //   minLength: {
+            //     value: 5,
+            //     message: 'String cannot less than 5 chars',
+            //   },
+            //   validate: {
+            //     equalToPassword: value =>
+            //       value.length < 10 || 'Password are not the same!',
+            //   },
+            // }}
             render={({field: {onChange, onBlur, value, ref}}) => (
               <View>
                 <Text style={styles.txtTitle}>Confirm password</Text>
@@ -286,13 +301,13 @@ const ComponentView = () => {
           <TouchableOpacity
             style={[
               styles.btnContainer,
-              // {
-              //   backgroundColor: isValid
-              //     ? 'rgba(9, 138, 224, 1)'
-              //     : 'rgba(9, 138, 224, 0.5)',
-              // },
+              {
+                backgroundColor: isValid
+                  ? 'rgba(9, 138, 224, 1)'
+                  : 'rgba(9, 138, 224, 0.5)',
+              },
             ]}
-            // disabled={!isValid}
+            disabled={!isValid}
             activeOpacity={0.7}
             onPress={e =>
               handleSubmit(
