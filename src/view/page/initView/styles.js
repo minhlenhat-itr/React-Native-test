@@ -6,7 +6,7 @@ const themedStyles = styleSheetFactory(theme => ({
     marginHorizontal: 50,
   },
   btnStyle: {
-    marginBottom: 50,
+    marginVertical: 25,
   },
 }));
 
