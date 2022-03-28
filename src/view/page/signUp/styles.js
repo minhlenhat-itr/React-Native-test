@@ -9,10 +9,9 @@ const themedStyles = styleSheetFactory(theme => ({
   btnNext: {
     width: '100%',
     borderRadius: 4,
-    backgroundColor: 'blue',
     padding: 12,
     alignItems: 'center',
-    marginVertical: 25,
+    marginVertical: 10,
   },
   lbl: {
     fontSize: 20,

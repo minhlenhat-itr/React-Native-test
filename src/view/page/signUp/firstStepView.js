@@ -1,9 +1,10 @@
-import React from 'react';
-import {View, Text} from 'react-native';
+import React, {useEffect} from 'react';
+import {View, Text, Button, TouchableOpacity} from 'react-native';
 import themedStyle from './styles';
+import globalStyles from '../../../constants/globalStyles';
 import {useTheme} from 'react-native-themed-styles';
 import {useForm, Controller} from 'react-hook-form';
-import {TouchableOpacity} from 'react-native-gesture-handler';
+// import {TouchableOpacity} from 'react-native-gesture-handler';
 import InputCT from '../../component/inputCT';
 import PropTypes from 'prop-types';
 import {checkNull} from '../../../utils/validation';
@@ -12,18 +13,26 @@ import _ from 'lodash';
 const FirstStepView = props => {
   const {onSubmitStep1} = props;
   const [styles] = useTheme(themedStyle);
+  const [glbStyles] = useTheme(globalStyles);
+
   const {
     control,
     setError,
+    setFocus,
     handleSubmit,
-    formState: {errors},
+    formState: {errors, isValid},
   } = useForm({
+    mode: 'onBlur',
     defaultValues: {
       firstName: '',
       lastName: '',
       email: '',
     },
   });
+
+  useEffect(() => {
+    console.log(' isValid: ' + isValid);
+  }, [isValid]);
 
   const onError = (error, event) => {
     //only catch rules error, but not catch undefined props or Error handle in onSubmit (call API, run async task, ...)
@@ -43,8 +52,8 @@ const FirstStepView = props => {
   };
 
   return (
-    <View style={{flex: 1}}>
-      <View style={{flex: 1}}>
+    <View style={glbStyles.flex1}>
+      <View style={glbStyles.flex1}>
         <Controller
           control={control}
           rules={{
@@ -53,11 +62,16 @@ const FirstStepView = props => {
               message: 'First name cannot be empty!',
             },
           }}
-          render={({field: {onChange, onBlur, value}}) => (
+          render={({field: {onChange, onBlur, value, ref}}) => (
             <InputCT
+              ref={ref}
               title="First name"
               onBlur={onBlur}
+              blurOnSubmit={false}
               onChange={onChange}
+              onSubmitEditing={() => {
+                setFocus('lastName');
+              }}
               value={value}
               error={errors.firstName}
             />
@@ -70,11 +84,16 @@ const FirstStepView = props => {
           rules={{
             required: 'Last name cannot be empty!',
           }}
-          render={({field: {onChange, onBlur, value}}) => (
+          render={({field: {onChange, onBlur, value, ref}}) => (
             <InputCT
+              ref={ref}
               title="Last name"
+              blurOnSubmit={false}
               onBlur={onBlur}
               onChange={onChange}
+              onSubmitEditing={() => {
+                setFocus('email');
+              }}
               value={value}
               error={errors.lastName}
             />
@@ -86,8 +105,9 @@ const FirstStepView = props => {
           rules={{
             required: 'Email cannot be empty!',
           }}
-          render={({field: {onChange, onBlur, value}}) => (
+          render={({field: {onChange, onBlur, value, ref}}) => (
             <InputCT
+              ref={ref}
               title="Email"
               onBlur={onBlur}
               onChange={onChange}
@@ -98,9 +118,18 @@ const FirstStepView = props => {
           name="email"
         />
       </View>
+
       <TouchableOpacity
+        disabled={!isValid}
         onPress={handleSubmit(onSubmit, onError)}
-        style={styles.btnNext}>
+        style={[
+          styles.btnNext,
+          {
+            backgroundColor: isValid
+              ? 'rgba(9, 138, 224, 1)'
+              : 'rgba(9, 138, 224, 0.5)',
+          },
+        ]}>
         <Text style={styles.lbl}>Next</Text>
       </TouchableOpacity>
     </View>

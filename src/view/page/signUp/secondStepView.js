@@ -15,6 +15,7 @@ const SecondStepView = props => {
   const {
     control,
     setError,
+    setFocus,
     handleSubmit,
     formState: {errors},
   } = useForm({
@@ -51,11 +52,13 @@ const SecondStepView = props => {
               message: 'Password cannot be empty!',
             },
           }}
-          render={({field: {onChange, onBlur, value}}) => (
+          render={({field: {onChange, onBlur, value, ref}}) => (
             <InputCT
+              ref={ref}
               title="Password"
               onBlur={onBlur}
               onChange={onChange}
+              onSubmitEditing={() => setFocus('confirmPassword')}
               value={value}
               error={errors.password}
               secureTextEntry={true}
