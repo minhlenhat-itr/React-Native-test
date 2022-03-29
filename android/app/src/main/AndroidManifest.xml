@@ -2,6 +2,10 @@
   package="com.reactnativetest">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="com.myapps.READ_DATABASE" />
+    <uses-permission android:name="com.myapps.WRITE_DATABASE" />
+    <permission android:name="com.myapps.READ_DATABASE" android:protectionLevel="signature" />
+    <permission android:name="com.myapps.WRITE_DATABASE" android:protectionLevel="signature" />
 
     <application
       android:name=".MainApplication"
@@ -21,5 +25,19 @@
             <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
       </activity>
+
+<!--        <provider-->
+<!--            android:name=".contentprovider.SharedStorageProvider"-->
+<!--            android:authorities="@string/shared_storage_provider_authority"-->
+<!--            android:exported="true"-->
+<!--            android:enabled="false"-->
+<!--            android:readPermission="com.myapps.READ_DATABASE"-->
+<!--            android:writePermission="com.myapps.WRITE_DATABASE"-->
+<!--            />-->
+        <provider
+            android:name=".contentprovider.MyContentProvider"
+            android:authorities="${applicationId}.contentprovider"
+            android:enabled="true"
+            android:exported="true"></provider>
     </application>
 </manifest>

@@ -1,6 +1,10 @@
 apply plugin: "com.android.application"
-
+apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 import com.android.build.OutputFile
+
+
 
 /**
  * The react.gradle file registers a task for each build variant (e.g. bundleDebugJsAndAssets
@@ -76,6 +80,8 @@ import com.android.build.OutputFile
  *   extraPackagerArgs: []
  * ]
  */
+
+//resValue "string", "shared_storage_provider_authority", applicationId + ".SharedStorageProvider." + project.env.get("APP_GROUP") // Used to generate dynamic authority name
 
 project.ext.react = [
     enableHermes: false,  // clean and rebuild if changing
@@ -180,6 +186,7 @@ android {
 
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     //noinspection GradleDynamicVersion
     implementation "com.facebook.react:react-native:+"  // From node_modules
 
