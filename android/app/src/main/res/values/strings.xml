@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">reactnativetest</string>
+    <string name="APPLICATION_ID">com.reactnativetest</string>
 </resources>

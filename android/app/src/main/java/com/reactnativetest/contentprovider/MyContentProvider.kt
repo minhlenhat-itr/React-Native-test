@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper
 import android.database.sqlite.SQLiteQueryBuilder
 import android.net.Uri
 import android.util.Log
+import com.reactnativetest.BuildConfig
 
 data class UserInfo(val userPool: String,
                     val accessToken: String,
@@ -16,19 +17,18 @@ data class UserInfo(val userPool: String,
 
 class MyContentProvider: ContentProvider() {
     private val TAG = "MyContentProvider"
-
     companion object {
         // defining authority so that other application can access it
-        const val PROVIDER_NAME = "com.demo.user.provider"
+        const val PROVIDER_NAME = "${BuildConfig.APPLICATION_ID}.provider"
 
         // defining content URI
         const val URL = "content://$PROVIDER_NAME/users"
 
         // parsing the content URI
         val CONTENT_URI = Uri.parse(URL)
+        const val applicationId = "applicationId"
         const val id = "id"
         const val name = "name"
-        const val userPoolId = "userPoolId"
         const val idToken = "idToken"
         const val accessToken = "accessToken"
         const val refreshToken = "refreshToken"
@@ -43,14 +43,16 @@ class MyContentProvider: ContentProvider() {
         const val TABLE_NAME = "Users"
 
         // declaring version of the database
-        const val DATABASE_VERSION = 2
+        const val DATABASE_VERSION = 5
 
         // sql query to create the table
         const val CREATE_DB_TABLE =
             (" CREATE TABLE " + TABLE_NAME
                     + " (id INTEGER PRIMARY KEY AUTOINCREMENT,"
-                    + name + " TEXT NOT NULL,"
-                    + idToken + " TEXT)")
+                    + applicationId + " TEXT NOT NULL,"
+                    + idToken + " TEXT NOT NULL,"
+                    + accessToken + " TEXT NOT NULL,"
+                    + refreshToken+ " TEXT NOT NULL)")
 
         init {
 
@@ -74,8 +76,8 @@ class MyContentProvider: ContentProvider() {
             )
         }
     }
-
     override fun onCreate(): Boolean {
+        Log.d(TAG, "onCreate MyContentProvider!")
         val context = context
         val dbHelper =
             DatabaseHelper(context)
@@ -116,17 +118,37 @@ class MyContentProvider: ContentProvider() {
         }
     }
 
-    override fun insert(uri: Uri, values: ContentValues?): Uri? {
-        Log.d(TAG, "insert: values ${values.toString()}")
-        val rowID = db!!.insert(TABLE_NAME, "", values)
-        Log.d(TAG, "insert: $rowID")
-        if (rowID > 0) {
-            val _uri =
-                ContentUris.withAppendedId(CONTENT_URI, rowID)
-            context!!.contentResolver.notifyChange(_uri, null)
-            return _uri
+    private fun isRecordExistInDatabase(values: ContentValues?) : Boolean {
+        Log.d(TAG, "isRecordExistInDatabase: ${values?.get("idToken")}")
+        val query = "SELECT * FROM " + TABLE_NAME + " WHERE " + applicationId+" = '"+values?.get("applicationId")+"'"
+        var cursor = db!!.rawQuery(query,null);
+        if(cursor.moveToFirst()) {
+            //Record Exist
+            cursor.close()
+            return true
         }
-        throw SQLiteException("Failed to add a record into $uri")
+        // Record un available
+        cursor.close()
+        return false
+    }
+
+    override fun insert(uri: Uri, values: ContentValues?): Uri? {
+
+        Log.d(TAG, "insert: values isExist ${isRecordExistInDatabase(values)}")
+        if (!isRecordExistInDatabase(values)) {
+            val rowID = db!!.insert(TABLE_NAME, "", values)
+            Log.d(TAG, "insert: $rowID")
+            if (rowID > 0) {
+                val uri =
+                    ContentUris.withAppendedId(CONTENT_URI, rowID)
+                Log.d(TAG, "insert: Uri: $uri")
+                context!!.contentResolver.notifyChange(uri, null)
+                return uri
+            }
+            throw SQLiteException("Failed to add a record into $uri")
+        } else {
+            throw SQLiteException("Record Existed in $uri !!")
+        }
     }
 
     override fun delete(uri: Uri, selection: String?, selectionArgs: Array<out String>?): Int {
@@ -135,7 +157,9 @@ class MyContentProvider: ContentProvider() {
             uriCode -> db!!.delete(TABLE_NAME, selection, selectionArgs)
             else -> throw IllegalArgumentException("Unknown URI $uri")
         }
-        context!!.contentResolver.notifyChange(uri, null)
+        if (count != 0) {
+            context!!.contentResolver.notifyChange(uri, null)
+        }
         return count
     }
 
@@ -171,7 +195,6 @@ class MyContentProvider: ContentProvider() {
         override fun onCreate(db: SQLiteDatabase) {
             db.execSQL(CREATE_DB_TABLE)
         }
-
         private val TAG = "DataBaseHelpder"
 
         override fun onUpgrade(
@@ -188,8 +211,6 @@ class MyContentProvider: ContentProvider() {
                 db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
                 onCreate(db);
             }
-//            db.execSQL("DROP TABLE IF EXISTS $TABLE_NAME")
-//            onCreate(db)
         }
     }
 }

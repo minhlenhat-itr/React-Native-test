@@ -106,43 +106,64 @@ const InitView = props => {
     }
   };
 
-  const callModule = () => {
+  const onFetchDataFromNative = async () => {
     // UserInfoMudle.shareData(userPoolId, accessToken, idToken, refreshToken);
     // UserInfoModule.saveData(userPoolId, accessToken, idToken, refreshToken);
-    UserInfoModule.getProviderData((idToken, accessToken, refreshToken) => {
-      console.log('idToken: ', idToken);
-      console.log('accessToken: ', accessToken);
-      console.log('refreshToken: ', refreshToken);
+    await UserInfoModule.getProviderData(
+      (result, msg, idToken, refreshToken, accessToken) => {
+        console.log('result: ', result);
+        console.log('msg: ', msg);
+        // console.log('data: ', data);
+        console.log('idToken: ', idToken);
+        console.log('refreshToken: ', refreshToken);
+        console.log('accessToken: ', accessToken);
+      },
+    );
+  };
+
+  const onDeleteDataFromNative = async () => {
+    console.log('onDelete');
+    await UserInfoModule.deleteData((result, error) => {
+      console.log('delete result: ', result, error);
+    });
+  };
+
+  const checkContentProviderStatus = async () => {
+    await UserInfoModule.checkFirstTimeCreateContentProvider((isExist, msg) => {
+      console.log('isExist: ' + isExist + ', msg: ' + msg);
     });
   };
 
   return (
     <View style={styles.container}>
-      <View style={styles.btnStyle}>
-        <Button
-          title="SINGLE-FORM"
-          onPress={() => {
-            navigation.navigate(EnumRouteName.ComponentView);
-          }}
-        />
-      </View>
-      <Button
-        title="MULTI-FORM"
-        onPress={() => {
-          navigation.navigate(EnumRouteName.SignUp);
-        }}
-      />
       {/* <View style={styles.btnStyle}>
         <Button title="GET AUTHENTICATION AWS" onPress={handleAuthentication} />
       </View> */}
 
       {/* <View style={styles.btnStyle}>
         <Button title="CALL API" onPress={handleCallAPI} />
+      </View> */}
+
+      <View style={styles.btnStyle}>
+        <Button
+          title="FETCH DATA FROM NATIVE MODULE"
+          onPress={onFetchDataFromNative}
+        />
       </View>
 
       <View style={styles.btnStyle}>
-        <Button title="CALL NATIVE MODULE" onPress={callModule} />
-      </View> */}
+        <Button
+          title="DELETE DATA FROM NATIVE MODULE"
+          onPress={onDeleteDataFromNative}
+        />
+      </View>
+
+      <View style={styles.btnStyle}>
+        <Button
+          title="CHECK IF CONTENT PROVIDER EXIST NATIVE MODULE"
+          onPress={checkContentProviderStatus}
+        />
+      </View>
     </View>
   );
 };
