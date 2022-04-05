@@ -8,9 +8,6 @@ const App = () => {
     <MenuProvider>
       <Navigations />
     </MenuProvider>
-    // <View style={{}}>
-    //   <Text>Hello world!</Text>
-    // </View>
   );
 };
 

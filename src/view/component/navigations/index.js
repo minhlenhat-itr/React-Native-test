@@ -8,7 +8,9 @@ const Stack = createStackNavigator();
 const Navigations = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="InitView">
+      <Stack.Navigator
+        screenOptions={{headerMode: false}}
+        initialRouteName="InitView">
         <Stack.Screen name={'InitView'} component={InitView} />
       </Stack.Navigator>
     </NavigationContainer>
