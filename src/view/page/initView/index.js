@@ -133,7 +133,7 @@ const InitView = props => {
       RefreshToken: new CognitoRefreshToken({RefreshToken: refreshToken}),
     });
 
-    let authUser = Auth.createCognitoUser();
+    let authUser = Auth.createCognitoUser('manhtran@itrvn.com');
     authUser.setSignInUserSession(session);
 
     var idTokenExpire = session.getIdToken().getExpiration();
@@ -188,7 +188,6 @@ const InitView = props => {
     console.log('family_name: ', attributes.family_name);
     console.log('given_name: ', attributes.given_name);
     console.log('email: ', attributes.email);
-    // console.log('data: ', attributes);
   };
 
   const onFetchDataFromNative = async () => {
